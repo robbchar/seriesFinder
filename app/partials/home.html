@@ -1,16 +1,11 @@
 
 <div class="row" data-ng-if="isLoggedIn === false">
   <a href="javascript:openOAuthWindow();">pop out node oauth</a>
-  <a href="http://127.0.0.1:8000/auth/goodreads">link to node oauth</a>
+  <a href="/login">link to node oauth</a>
   <p data-ng-click="getUserInfo()">User Info</p>
   <p data-ng-click="checkIfIsLoggedIn()">IsLoggedIn</p>
 </div>
-<div class="row" data-ng-if="isLoggedIn === true">
-  Welcome {{ user.name }}
+<div class="row" data-ng-if="isLoggedIn === 'true'">
+  Welcome {{ user.displayName }}
 </div>
 
-<script>
-function openOAuthWindow () {
-  window.open("http://127.0.0.1:8000/auth/goodreads", "nodeGoodReads OAtuh", "width=200, height=100");
-}
-</script>

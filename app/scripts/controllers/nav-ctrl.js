@@ -5,6 +5,8 @@ angular.module('seriesFinder')
   $scope.currentPage = '#';
 
   $rootScope.$on('$locationChangeSuccess', function(event, currentPage, previousPage){
-    $scope.currentPage = $route.current.originalPath.toLowerCase();
+  	if(typeof $route.current.originalPath !== 'undefined') {
+	    $scope.currentPage = $route.current.originalPath.toLowerCase();
+	}
   });
 });

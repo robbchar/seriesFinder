@@ -5,9 +5,8 @@ angular.module('seriesFinder')
   $scope.isLoggedIn = false;
   $scope.user;
 
-  // $scope.startLogin = MainService.StartLogin;
-  $scope.checkIfIsLoggedIn = MainService.IsLoggedIn;
-  $scope.getUserInfo = MainService.GetUserInfo;
+  MainService.GetUserInfo();
+  MainService.GetIsLoggedIn();
 
   $scope.$on('MainDataChange', function () {
     $scope.isLoggedIn = MainService.IsLoggedIn;

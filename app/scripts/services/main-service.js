@@ -9,36 +9,35 @@ angular.module('seriesFinder')
     function init() {
     }
 
-    function isLoggedIn () {
-      // $http.get('http://' + grServiceHost + ':' + grServicePort + '/isLoggedIn')
-      $http.get('http://www.google.com/')
-      // $http.get('http://www.google.')
-      // .then(function (response) {
-      //   user = response.data;
-      //   $rootScope.$broadcast('MainDataChange');
-      // }, function (error) {
-      //   console.log('error in isLoggedIn');
-      // });
+    function getIsLoggedIn () {
+      var that = this;
+
+      $http.get('/isLoggedIn')
       .success(function(data, status, headers, config) {
-        user = data;
+        that.IsLoggedIn = data.isLoggedIn;
         $rootScope.$broadcast('MainDataChange');
       }).
       error(function(data, status, headers, config) {
         console.log('error in isLoggedIn');
       });
+
+      // $http.get('/auth/goodreads')
+      // .success(function(data, status, headers, config){
+      //   alert('logged in!');
+      // })
+      // .error(function(data, status, headers, config) {
+      //   console.log('error!');
+      // });
+      // window.location = '/auth/goodreads';
+      // window.location = '/isAuthenticated';
     }
 
     function getUserInfo () {
-      // $http.get('http://' + grServiceHost + ':' + grServicePort + '/userInfo')
-      $http.get('http://www.google.com/')
-      // .then(function (response) {
-      //   user = response.data;
-      //   $rootScope.$broadcast('MainDataChange');
-      // }, function (error) {
-      //   console.log('error in getUserInfo');
-      // });
+      var that = this;
+
+      $http.get('/userInfo')
       .success(function(data, status, headers, config) {
-        user = data;
+        that.User = data.user;
         $rootScope.$broadcast('MainDataChange');
       }).
       error(function(data, status, headers, config) {
@@ -46,21 +45,11 @@ angular.module('seriesFinder')
       });
     }
 
-    function startLogin() {
-      $http.get('http://' + grServiceHost + ':' + grServicePort + '/auth/goodreads')
-      .then(function (response) {
-        user = response.data;
-        $rootScope.$broadcast('MainDataChange');
-      }, function (error) {
-        console.log('error in startLogin');
-      });
-    }
-
     init();
   return {
     IsLoggedIn: isLoggedIn,
     User: user,
-    StartLogin: startLogin,
-    GetUserInfo: getUserInfo
+    GetUserInfo: getUserInfo,
+    GetIsLoggedIn: getIsLoggedIn
   };
 });

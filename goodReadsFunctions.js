@@ -1,20 +1,25 @@
 module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
 {
-  var grURLs = {
+  var goodreads = require('goodreads'),
+    url = require('url'),
+    grClient = new goodreads.client({ 'key': appInfo.key, 'secret': appInfo.secret }),
+    grURLs = {
 
-  },
-  goodReadsCallQueue = [],
-  goodReadsCallStates = {
-    waiting: 0,
-    active: 1
-  },
-  goodReadsCallState = goodReadsCallStates.waiting, // this can have one of three
-  lastGoodReadsCallTime = 0,
-  httpsOptions = {
-    host: 'www.goodreads.com',
-    port: 443
-  },
-  user;
+    },
+    goodReadsCallQueue = [],
+    goodReadsCallStates = {
+      waiting: 0,
+      active: 1
+    },
+    goodReadsCallState = goodReadsCallStates.waiting, // this can have one of three
+    lastGoodReadsCallTime = 0,
+    httpsOptions = {
+      host: 'www.goodreads.com',
+      port: 443
+    },
+    user,
+    oauthToken,
+    oauthTokenSecret;
 
   function setUser(_user) {
     user = _user;
@@ -53,7 +58,7 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
       user.tokenSecret,
       function(e, data, res){
         console.log('oauth call finished');
-        if (e) console.error(e);
+        if (e) console.errisLoggedInor(e);
 
         xml2jsParser.parseString(data, function(err, result){
         console.log('xml2jsParser finished');
@@ -78,25 +83,28 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
 
   var isLoggedIn = function(req, res) {
     console.log('isLoggedIn');
-    if(typeof user !== 'undefined') {
-    console.log('typeof user: ' + typeof user);
-      res.send({ isLoggedIn: 'true'});
-    } else {
-      res.send({ isLoggedIn: 'false'});
-    }
+    // console.log('user: ' + user);
+    // if(typeof oauthToken !== 'undefined' && typeof oauthTokenSecret !== 'undefined') {
+    //   res.send({ isLoggedIn: 'true'});
+    // } else {
+    //   login(req, res);
+    // }
+    res.send({ isLoggedIn: 'true'});
   };
 
   var getUserInfo = function(req, res) {
     console.log('getUserInfo');
-    console.log('user.GRprofileId: ' + user.GRprofileId);
-    requestGoodReadsResource('http://goodreads.com/user/show/' + user.GRprofileId + '.xml?key=' + appInfo.key, function (jsonData) {
-      if(nodeOnly === true) {
-        res.render('userInfo', { response: jsonData });
-        return;
-      }
+    // https.get('https://www.goodreads.com/api/auth_user', oauthToken, oauthTokenSecret, function (e, data, res) {
+    //   console.log(jsonData);
+    //   if(nodeOnly === true) {
+    //     res.render('userInfo', { response: jsonData });
+    //     return;
+    //   }
 
-      res.send(jsonData);
-    });
+    //   res.send(jsonData);
+    // });
+    res.send(JSON.stringify(user));
+    console.log('getUserInfo end');
   };
 
   var shelfInfo = function(req, res) {
@@ -150,7 +158,31 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
     });
   };
 
+  // var login = function (req, res) {
+  //   console.log('login');
+  //   grClient.requestToken(function(callback) {
+  //     oauthToken = callback.oauthToken;
+  //     oauthTokenSecret = callback.oauthTokenSecret;
+
+  //     // getUserInfo();
+  //     processCallBack(req, res);
+  //   });
+  // }
+
+  // var processCallBack = function (req, res) {
+  //   console.log('processCallBack');
+  //   grClient.processCallback(oauthToken, oauthTokenSecret, true, function(callback) {
+  //     console.log('callback: ' + JSON.stringify(callback));
+  //     // oauthToken = callback.oauthToken;
+  //     // oauthTokenSecret = callback.oauthTokenSecret;
+
+  //     getUserInfo();
+  //   });
+  // }
+
   return {
+    // ProcessCallBack: processCallBack,
+    // Login: login,
     GetUserInfo: getUserInfo,
     ShelfInfo: shelfInfo,
     BookInfo: bookInfo,
