@@ -42,14 +42,14 @@ module.exports = function(appInfo, https, xml2jsParser)
 
   function makeGoodReadsCall () {
     console.log('makeGoodReadsCall');
-    console.log('user.token: ' + user.token);
+    // console.log('user.token: ' + user.token);
     goodReadsCallState = goodReadsCallStates.active;
     lastGoodReadsCallTime = new Date().getTime();
     var requestInfo = goodReadsCallQueue.shift();
 
-    if (!user.token) {
-      console.error("You didn't have the user log in first");
-    }
+    // if (!user.token) {
+    //   console.error("You didn't have the user log in first");
+    // }
 
     console.log('requestInfo.path: ' + requestInfo.path);
     https.get(
@@ -105,6 +105,7 @@ module.exports = function(appInfo, https, xml2jsParser)
     });
   };
 
+  //https://www.goodreads.com/review/list?id=21047406&key=qWqSov4tZxgcRuMjoabsg&v=2
   var bookInfo = function(req, res) {
     user = req.user;
     var bookId = req.query.bookId;
