@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('seriesFinder')
-.controller('MainCtrl', function ($scope, $http, MainService, $cookies) {
+.controller('MainCtrl', function ($scope, MainService) {
   $scope.isLoggedIn = false;
   $scope.user;
 

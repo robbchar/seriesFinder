@@ -19,12 +19,9 @@ var express = require('express'),
 	monk = require('monk'),
 	db = monk('localhost:27017/goodreads'),
 	users = db.get('users'),
-	// is the nodeOnly argument passed in
-	nodeOnly = (process.argv.indexOf('nodeOnly') > -1),
-	// app info, configguration data
+	// app info, configuration data
 	appInfo = require('./appInfo.json'), // this includes the keys for good reads and the host and the port for the server
 	GRapi = require('./goodReadsFunctions.js')(appInfo, https, xml2jsParser); // good reads api functions
-	// grOAuth = require('./grOAuth.js')(appInfo, db, app, passport); // gr oauth library
 	
 function addUser(user, callback) {
 	console.log('addUser');
@@ -98,12 +95,12 @@ app.get('/', function(req, res) {
 
 // app.get('/login', GRapi.Login);
 // app.get('/processCallBack', GRapi.ProcessCallBack);
-app.get('/isLoggedIn', GRapi.IsLoggedIn);
-app.get('/userInfo', GRapi.GetUserInfo);
-app.get('/shelfInfo', GRapi.ShelfInfo);
-app.get('/bookInfo', GRapi.BookInfo);
-app.get('/seriesInfo', GRapi.SeriesInfo);
-app.get('/getSeriesToFinish', GRapi.GetSeriesToFinish);
+app.get('/isLoggedIn', ensureAuthenticated, GRapi.IsLoggedIn);
+app.get('/userInfo', ensureAuthenticated, GRapi.GetUserInfo);
+app.get('/shelfInfo', ensureAuthenticated, GRapi.ShelfInfo);
+app.get('/bookInfo', ensureAuthenticated, GRapi.BookInfo);
+app.get('/seriesInfo', ensureAuthenticated, GRapi.SeriesInfo);
+app.get('/getSeriesToFinish', ensureAuthenticated, GRapi.GetSeriesToFinish);
 
 
 
@@ -154,12 +151,6 @@ passport.use(new GoodreadsStrategy({
 ));
 
 
-// app.get('/isAuthenticated',
-// 	ensureAuthenticated,
-// 	function(res, req){
-// 		req.send(user);
-// 	});
-
 // GET /auth/goodreads
 //   Use passport.authenticate() as route middleware to authenticate the
 //   request.  The first step in Goodreads authentication will involve redirecting
@@ -205,8 +196,3 @@ function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }
 	res.redirect('/auth/goodreads')
 }
-
-// function authenticate(){
-// 	console.log('authenticate');
-// 	passport.authenticate('goodreads');
-// }

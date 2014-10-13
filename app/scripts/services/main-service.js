@@ -3,6 +3,7 @@ angular.module('seriesFinder')
 .service('MainService', function ($rootScope, $http, $cookies) {
   var isLoggedIn,
     user = {},
+    books = [],
     grServiceHost = '127.0.0.1',
     grServicePort = 8000;
 
@@ -21,15 +22,6 @@ angular.module('seriesFinder')
         console.log('error in isLoggedIn');
       });
 
-      // $http.get('/auth/goodreads')
-      // .success(function(data, status, headers, config){
-      //   alert('logged in!');
-      // })
-      // .error(function(data, status, headers, config) {
-      //   console.log('error!');
-      // });
-      // window.location = '/auth/goodreads';
-      // window.location = '/isAuthenticated';
     }
 
     function getUserInfo () {
@@ -45,11 +37,26 @@ angular.module('seriesFinder')
       });
     }
 
+    function getBooks () {
+      var that = this;
+
+      $http.get('/bookInfo')
+      .success(function(data, status, headers, config) {
+        that.User = data.books;
+        $rootScope.$broadcast('BookDataChange');
+      }).
+      error(function(data, status, headers, config) {
+        console.log('error in getBooks');
+      });
+    }
+
     init();
   return {
     IsLoggedIn: isLoggedIn,
     User: user,
     GetUserInfo: getUserInfo,
-    GetIsLoggedIn: getIsLoggedIn
+    GetIsLoggedIn: getIsLoggedIn,
+    Books: books,
+    GetBooks: getBooks
   };
 });

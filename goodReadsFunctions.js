@@ -1,4 +1,4 @@
-module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
+module.exports = function(appInfo, https, xml2jsParser)
 {
   var goodreads = require('goodreads'),
     url = require('url'),
@@ -83,26 +83,13 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
 
   var isLoggedIn = function(req, res) {
     console.log('isLoggedIn');
-    // console.log('user: ' + user);
-    // if(typeof oauthToken !== 'undefined' && typeof oauthTokenSecret !== 'undefined') {
-    //   res.send({ isLoggedIn: 'true'});
-    // } else {
-    //   login(req, res);
-    // }
+
     res.send({ isLoggedIn: 'true'});
   };
 
   var getUserInfo = function(req, res) {
     console.log('getUserInfo');
-    // https.get('https://www.goodreads.com/api/auth_user', oauthToken, oauthTokenSecret, function (e, data, res) {
-    //   console.log(jsonData);
-    //   if(nodeOnly === true) {
-    //     res.render('userInfo', { response: jsonData });
-    //     return;
-    //   }
 
-    //   res.send(jsonData);
-    // });
     res.send(JSON.stringify(user));
     console.log('getUserInfo end');
   };
@@ -113,10 +100,6 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
       shelfName = req.query.shelfName;
 
     requestGoodReadsResource('/review/list/' + req.user.id + '.xml?key=' + appInfo.key + '&page=' + pageNum + '&shelf=' + shelfName, function (jsonData) {
-      if(nodeOnly === true) {
-        res.render('shelfInfo', { response: jsonData, name: shelfName });
-        return;
-      }
 
       res.send(jsonData);
     });
@@ -127,10 +110,6 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
     var bookId = req.query.bookId;
 
     requestGoodReadsResource('/book/show/' + bookId + '.xml?key=' + appInfo.key, function (jsonData) {
-      if(nodeOnly === true) {
-        res.render('bookInfo', { response: jsonData });
-        return;
-      }
 
       res.send(jsonData);
     });
@@ -141,10 +120,6 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
     var seriesId = req.query.seriesId;
 
     requestGoodReadsResource('/series/' + seriesId + '?key=' + appInfo.key, function (jsonData) {
-      if(nodeOnly === true) {
-        res.render('seriesInfo', { response: jsonData });
-        return;
-      }
 
       res.send(jsonData);
     });
@@ -158,31 +133,7 @@ module.exports = function(appInfo, https, xml2jsParser, nodeOnly)
     });
   };
 
-  // var login = function (req, res) {
-  //   console.log('login');
-  //   grClient.requestToken(function(callback) {
-  //     oauthToken = callback.oauthToken;
-  //     oauthTokenSecret = callback.oauthTokenSecret;
-
-  //     // getUserInfo();
-  //     processCallBack(req, res);
-  //   });
-  // }
-
-  // var processCallBack = function (req, res) {
-  //   console.log('processCallBack');
-  //   grClient.processCallback(oauthToken, oauthTokenSecret, true, function(callback) {
-  //     console.log('callback: ' + JSON.stringify(callback));
-  //     // oauthToken = callback.oauthToken;
-  //     // oauthTokenSecret = callback.oauthTokenSecret;
-
-  //     getUserInfo();
-  //   });
-  // }
-
   return {
-    // ProcessCallBack: processCallBack,
-    // Login: login,
     GetUserInfo: getUserInfo,
     ShelfInfo: shelfInfo,
     BookInfo: bookInfo,
